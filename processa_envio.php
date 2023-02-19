@@ -41,6 +41,7 @@ $mensagem->__set('assunto', $_POST['assunto']);
 $mensagem->__set('mensagem', $_POST['mensagem']);
 
 //print_r($mensagem);
+
 if(!$mensagem->mensagemValida()) {
     echo 'Mensagem não é válida';
     die();
@@ -55,14 +56,14 @@ try {
     $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
     $mail->Username   = 'ducosmohayday@gmail.com';                     //SMTP username
-    $mail->Password   = 'qzgaswythqasqwqd';                               //SMTP password
+    $mail->Password   = 'senha';                               //SMTP password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
     $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
     //Recipients
     $mail->setFrom('ducosmotdl@gmail.com', 'Ducosmo Remetente');
-    $mail->addAddress('ducosmotdl@gmail.com', 'Ducosmo Destinatário');     //Add a recipient
-    $mail->addReplyTo('ducosmotdl@hotmail.com', 'Information');
+    $mail->addAddress($mensagem->__get('para'));     //Add a recipient
+    //$mail->addReplyTo('ducosmotdl@hotmail.com', 'Information');
     // $mail->addCC('cc@example.com');
     // $mail->addBCC('bcc@example.com');
 
@@ -72,12 +73,12 @@ try {
 
     //Content
     $mail->isHTML(true);                                  //Set email format to HTML
-    $mail->Subject = 'Oi eu sou o assunto';
-    $mail->Body    = 'Oi! Eu sou o conteúdo do <strong>email</strong>.';
-    $mail->AltBody = 'Oi! Eu sou o conteúdo do email.';
+    $mail->Subject = $mensagem->__get('assunto');
+    $mail->Body    = $mensagem->__get('mensagem');
+    $mail->AltBody = 'É necessário utilizar um client que suporte HTML para ter acesso total ao cnoteúdo dessa mensagem';
 
     $mail->send();
-    echo 'Message has been sent';
+    echo 'E-mail enviado com sucesso!';
 } catch (Exception $e) {
     echo 'Não foi possível enviar este e-mail! Por favor tente novamente mais';
     echo "Detalhes do erro: {$mail->ErrorInfo}";
